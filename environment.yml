@@ -1,0 +1,22 @@
+name: digit-audio
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pytorch>=1.12.0
+  - torchaudio>=0.12.0
+  - numpy>=1.21.0
+  - pandas>=1.4.0
+  - matplotlib>=3.5.0
+  - seaborn>=0.11.0
+  - scikit-learn>=1.1.0
+  - librosa>=0.10.1
+  - jupyter>=1.0.0
+  - pip
+  - pip:
+    - datasets>=2.10.0
+    - soundfile>=0.12.1
+    - pyaudio>=0.2.11
+    - tqdm>=4.60.0 
