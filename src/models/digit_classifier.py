@@ -200,34 +200,52 @@ class SimpleMLMLP(nn.Module):
 
 
 def create_model(
-    model_type: str = "lightweight",
-    input_channels: int = 13,
-    input_length: int = 32,
-    num_classes: int = 10,
-    **kwargs,
-) -> nn.Module:
+    model_type="advanced", input_channels=13, input_length=32, num_classes=10
+):
     """
-    Create a model based on the specified type.
+    Create a model for digit classification.
 
     Args:
-        model_type: Type of model ('lightweight', 'mini', 'mlp')
-        input_channels: Number of input channels
-        input_length: Input sequence length
-        num_classes: Number of classes
-        **kwargs: Additional arguments for specific models
+        model_type: Model architecture type
+        input_channels: Number of input feature channels
+        input_length: Length of input sequence
+        num_classes: Number of output classes
 
     Returns:
         PyTorch model
     """
+    # Import advanced models
+    try:
+        from .advanced_digit_classifier import create_advanced_model
+
+        # Check if it's an advanced model type
+        advanced_types = ["advanced", "efficient", "transformer", "ensemble"]
+        if model_type in advanced_types:
+            return create_advanced_model(
+                model_type, input_channels, input_length, num_classes
+            )
+    except ImportError:
+        print("⚠️  Advanced models not available, falling back to basic models")
+
+    # Original basic models
     if model_type == "lightweight":
-        return LightweightCNN(input_channels, num_classes, input_length, **kwargs)
+        return LightweightCNN(input_channels, num_classes, input_length)
     elif model_type == "mini":
         return MiniCNN(input_channels, num_classes, input_length)
     elif model_type == "mlp":
         input_size = input_channels * input_length
-        return SimpleMLMLP(input_size, num_classes, **kwargs)
+        return SimpleMLMLP(input_size, num_classes)
     else:
-        raise ValueError(f"Unknown model type: {model_type}")
+        # Default to advanced if available, otherwise lightweight
+        try:
+            from .advanced_digit_classifier import create_advanced_model
+
+            return create_advanced_model(
+                "advanced", input_channels, input_length, num_classes
+            )
+        except ImportError:
+            print(f"⚠️  Unknown model type '{model_type}', using lightweight CNN")
+            return LightweightCNN(input_channels, num_classes, input_length)
 
 
 def count_parameters(model: nn.Module) -> Dict[str, Any]:
